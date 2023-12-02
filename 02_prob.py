@@ -32,13 +32,20 @@ def parse_line(line):
 
 max_possible = np.array([12, 13, 14])
 possible_game_nums = []
+products = []
 for game in raw_data:
     game_n, color_max = parse_line(game)
-    print(color_max)
+    products.append(np.product(color_max))
     compare = max_possible - color_max
-    print(compare)
     if all(compare >= 0):
-        print(game_n)
         possible_game_nums.append(game_n)
 
 print(f"Part 1: Sum of possible games is {sum(possible_game_nums)}")
+print(f"Part 2: Sum of products of min possible values in each game is {sum(products)}")
+
+# PART 2: Find the min possible n for each color in each game - EDITED above to accomplish this.
+# 1. Find get max of each color (as before)
+# 2. Get the product of the max set
+# 3. Sum the products
+
+
