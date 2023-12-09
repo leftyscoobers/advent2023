@@ -1,6 +1,6 @@
 # PROBLEM 7: Card games
 
-raw_data = [line.strip().split() for line in open('tmp.txt', 'r').readlines()]
+raw_data = [line.strip().split() for line in open('07_input.txt', 'r').readlines()]
 
 card_map = {"A":"M", "K":"L", "Q":"K", "J":"J", "T":"I", "9":"H", "8":"G", "7":"F", 
             "6":"E", "5":"D", "4":"C", "3":"B", "2":"A"}
@@ -42,19 +42,26 @@ def parse_cards(hand):
     return get_hand_type(collected_values)
 
 
-hand_bid = {}
-hand_to_type = []
-
 def get_points(raw_data, card_map, use_joker = False):
+    hand_bid = {}
+    hand_to_type = []
     for h, b in raw_data:
         new_hand = ''.join([card_map[v] for v in list(h)])
         hand_bid[new_hand] = int(b)
+        hand_type = parse_cards(new_hand) # May change if using joker and hand contains joker
 
-        if use_joker:
-
-
-        else:
-            hand_type = parse_cards(new_hand)
+        if use_joker: # Note that joker is "A" in the map
+            if "A" in new_hand:
+                if new_hand.count("A") == len(new_hand): # All jokers
+                    hand_type = 7
+                else:
+                    non_joker_cards = set([c for c in list(new_hand) if c != "A"])
+                    possible_hands = []
+                    for c in non_joker_cards:
+                        hand_could_be = new_hand.replace("A", c)
+                        possible_hands.append(hand_could_be)
+                    types_possible = [parse_cards(h) for h in possible_hands]
+                    hand_type = max(types_possible)   
         
         hand_to_type.append((new_hand, hand_type))
 
@@ -67,9 +74,11 @@ def get_points(raw_data, card_map, use_joker = False):
 
     return total_points
 
-print(f"Part 1:\n{get_points(raw_data, use_joker=False)}") 
+
+print(f"Part 1:\n{get_points(raw_data, card_map, use_joker=False)}") 
 
 # PART 2: J cards are now jokers (wildcards), use in the most advantagous way possible.
 card_map_joker = {"A":"M", "K":"L", "Q":"K", "J":"A", "T":"J", "9":"I", "8":"H", "7":"G", 
             "6":"F", "5":"E", "4":"D", "3":"C", "2":"B"}
 
+print(f"Part 2:\n{get_points(raw_data, card_map_joker, use_joker=True)}")
