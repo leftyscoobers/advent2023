@@ -35,10 +35,9 @@ for line in raw_data:
 
 
 
-def get_map_value(value, dest_source_maps):
+def get_map_value(value, dest_source_map):
     map_output = value
-    for dest_source_range_tuple in dest_source_maps:
-        d, s, r = dest_source_range_tuple
+    for d, s, r in dest_source_map:
         if value >= s and value < (s + r):
             diff = value - s
             map_output = d + diff
